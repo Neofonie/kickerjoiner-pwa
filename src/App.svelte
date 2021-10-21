@@ -7,6 +7,7 @@
     import Joiner from "./comps/Joiner.svelte";
     import Games from "./comps/Games.svelte";
     import Clients from "./comps/Clients.svelte";
+    import Notification from "./comps/Notification.svelte";
 
     connectToWSS((data) => {
         console.log('connectToWSS refresh', data)
@@ -31,7 +32,8 @@
                 updateClients(data.clients);
                 break;
             case 'ERROR':
-                document.querySelector('#error').innerHTML = JSON.stringify(data, null, 2);
+                //document.querySelector('#error').innerHTML = JSON.stringify(data, null, 2);
+                console.error('wss', data);
                 break;
             case 'CLOSE':
                 break;
@@ -43,6 +45,7 @@
     <Joiner/>
     <Games/>
     <Clients/>
+    <Notification />
 </main>
 
 <style lang="scss" global>

@@ -12,3 +12,9 @@
   * setup base sass in src/scss 
 * add typescript to rollup.config.js and package.json
 * create svelte files
+* add deploy.yml for github actions
+* add public/manifest.json
+  * create app icons + favicons https://www.favicon-generator.org/ 
+  * add maskable icons https://maskable.app/editor 96 128 192
+* add <icon /> and <meta /> tags index.html
+* add public/js/pwa.js & service-worker.js
