@@ -81,7 +81,12 @@
     window.onload = () => {
         if ('serviceWorker' in navigator) {
             console.log(pre, 'init service worker')
-            const sw = navigator.serviceWorker.register('./js/service-worker.js?cb=' + window.cacheBuster);
+            const sw = navigator.serviceWorker.register('/js/service-worker.js?cb=' + window.cacheBuster, { scope: './' })
+                .then((registration) => {
+                    console.log(pre, 'service worker registered');
+                }).catch((error) => {
+                    console.error(pre, 'service worker error', error);
+                });
 
             if ('permissions' in navigator) {
                 navigator.permissions.query({ name: 'notifications' })
