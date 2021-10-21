@@ -4,7 +4,7 @@
     let sw;
     let swRegistration;
     const registerPushSubscriptionAfterPermissionGranted = (sw) => {
-        console.log(pre, 'registerPushSubscriptionAfterPermissionGranted')
+        console.log(pre, 'notification granted')
         let subscriptionExists = false;
 
         // https://serviceworke.rs/push-get-payload_index_doc.html
@@ -27,8 +27,8 @@
         }
 
         sw
-            .then(function (registration) {
-                console.log(pre, 'service worker is ready for push manager', registration)
+            .then(function () {
+                console.log(pre, 'service worker is ready for push manager')
                 return swRegistration.pushManager.getSubscription()
                     .then(async function (subscription) {
                         if (subscription) {
@@ -41,7 +41,7 @@
                         console.log(pre, 'create subscription', subscription);
                         const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
 
-                        return registration.pushManager.subscribe({
+                        return swRegistration.pushManager.subscribe({
                             userVisibleOnly: true,
                             applicationServerKey,
                         });
@@ -94,16 +94,14 @@
             if ('permissions' in navigator) {
                 navigator.permissions.query({ name: 'notifications' })
                     .then(function (notificationPerm) {
-                        console.log(pre, 'notification permission changed', notificationPerm.state)
+                        console.log(pre, 'notification permission init', notificationPerm.state)
 
                         if (notificationPerm.state === 'granted') {
-                            console.log(pre, 'notification granted')
                             registerPushSubscriptionAfterPermissionGranted(sw);
                         }
 
                         notificationPerm.onchange = function () {
                             if (notificationPerm.state === 'granted') {
-                                console.log(pre, 'notification granted')
                                 registerPushSubscriptionAfterPermissionGranted(sw);
                             }
 
