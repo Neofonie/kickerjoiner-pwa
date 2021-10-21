@@ -2,6 +2,7 @@
     import { HRDate } from '../utils';
     import { deleteJoiner, deleteGame, setGOGOGO } from '../api';
     import { storedSettings } from '../stores';
+    import { onMount } from "svelte";
 
     export let game: any;
     let settings: any;
@@ -9,11 +10,11 @@
 
     storedSettings.subscribe(value => {
         settings = value;
-
-        if (game.joiner.length === settings.maxjoiner) {
-            showGogogoButtons = true;
-        }
     });
+
+    $: {
+        showGogogoButtons = (game.joiner.length === settings.maxjoiner);
+    }
 </script>
 
 <div class="game{game.done ? ' is-done' : ''}">
@@ -40,7 +41,7 @@
         </tr>
         </thead>
         <tbody>
-        {#each game.joiner as joiner}
+        {#each game.joiner as joiner (joiner.id)}
             <tr>
                 <td>{joiner.id}</td>
                 <td>{joiner.clientid}</td>
