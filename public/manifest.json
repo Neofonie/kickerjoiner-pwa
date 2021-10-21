@@ -1,7 +1,7 @@
 {
   "name": "Kickerjoiner",
   "short_name": "KIJ",
-  "start_url": "/kickerjoiner-pwa/index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#CA0000",
   "theme_color": "#CA0000",
