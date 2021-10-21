@@ -1,4 +1,6 @@
 21.10.2021
+* 
+* safari, ios
 * (!) Circular dependencies
  src\stores.ts -> src\api.ts -> src\stores.ts
  src\websocket.ts -> src\stores.ts -> src\api.ts -> src\websocket.ts
