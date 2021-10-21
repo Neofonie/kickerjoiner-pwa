@@ -2,6 +2,7 @@
     const pre = '[PWA Loader]';
     const api = '//kij.willy-selma.de';
     let sw;
+    let swRegistration;
     const registerPushSubscriptionAfterPermissionGranted = (sw) => {
         console.log(pre, 'registerPushSubscriptionAfterPermissionGranted')
         let subscriptionExists = false;
@@ -25,11 +26,10 @@
             return outputArray;
         }
 
-        console.log(pre, 'sw handling')
         sw
             .then(function (registration) {
-                console.log(pre, 'is ready')
-                return registration.pushManager.getSubscription()
+                console.log(pre, 'service worker is ready for push manager', registration)
+                return swRegistration.pushManager.getSubscription()
                     .then(async function (subscription) {
                         if (subscription) {
                             console.log(pre, 'subscription already there', subscription);
@@ -61,7 +61,6 @@
                     localStorage.setItem('subscriptionID', dbsubscription.id);
                     console.log(pre, 'subscriptionID is in localstorage', dbsubscription)
                 }
-
                 console.log(pre, 'window.notifyme(\'payload\')')
                 window.notifyme = function (msg) {
                     const payload = msg || 'ich bin ein notify';
@@ -85,8 +84,9 @@
         if ('serviceWorker' in navigator) {
             console.log(pre, 'init service worker')
             sw = navigator.serviceWorker.register('/kickerjoiner-pwa/js/service-worker.js?cb=' + window.cacheBuster)
-                .then(() => {
-                    console.log(pre, 'service worker registered');
+                .then((registration) => {
+                    console.log(pre, 'service worker registered', registration);
+                    swRegistration = registration;
                 }).catch((error) => {
                     console.error(pre, 'service worker error', error);
                 });
