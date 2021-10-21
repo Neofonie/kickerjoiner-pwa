@@ -1,6 +1,7 @@
 (() => {
     const pre = '[PWA Loader]';
     const api = '//kij.willy-selma.de';
+    let sw;
     const registerPushSubscriptionAfterPermissionGranted = (sw) => {
         console.log(pre, 'registerPushSubscriptionAfterPermissionGranted')
         let subscriptionExists = false;
@@ -24,26 +25,28 @@
             return outputArray;
         }
 
-        sw.then(function (registration) {
-            console.log(pre, 'is ready')
-            return registration.pushManager.getSubscription()
-                .then(async function (subscription) {
-                    if (subscription) {
-                        console.log(pre, 'subscription already there', subscription);
-                        subscriptionExists = true;
-                        return subscription;
-                    }
+        console.log(pre, 'sw handling')
+        sw
+            .then(function (registration) {
+                console.log(pre, 'is ready')
+                return registration.pushManager.getSubscription()
+                    .then(async function (subscription) {
+                        if (subscription) {
+                            console.log(pre, 'subscription already there', subscription);
+                            subscriptionExists = true;
+                            return subscription;
+                        }
 
-                    const vapidPublicKey = await fetch(api + '/push/vapidPublicKey').then(res => res.text());
-                    console.log(pre, 'create subscription', subscription);
-                    const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
+                        const vapidPublicKey = await fetch(api + '/push/vapidPublicKey').then(res => res.text());
+                        console.log(pre, 'create subscription', subscription);
+                        const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
 
-                    return registration.pushManager.subscribe({
-                        userVisibleOnly: true,
-                        applicationServerKey,
+                        return registration.pushManager.subscribe({
+                            userVisibleOnly: true,
+                            applicationServerKey,
+                        });
                     });
-                });
-        })
+            })
             .then(async function (subscription) {
                 if (!subscriptionExists) {
                     const dbsubscription = await fetch(api + '/push/register', {
@@ -81,8 +84,8 @@
     window.onload = () => {
         if ('serviceWorker' in navigator) {
             console.log(pre, 'init service worker')
-            const sw = navigator.serviceWorker.register('/kickerjoiner-pwa/js/service-worker.js?cb=' + window.cacheBuster)
-                .then((registration) => {
+            sw = navigator.serviceWorker.register('/kickerjoiner-pwa/js/service-worker.js?cb=' + window.cacheBuster)
+                .then(() => {
                     console.log(pre, 'service worker registered');
                 }).catch((error) => {
                     console.error(pre, 'service worker error', error);
@@ -92,6 +95,12 @@
                 navigator.permissions.query({ name: 'notifications' })
                     .then(function (notificationPerm) {
                         console.log(pre, 'notification permission changed', notificationPerm.state)
+
+                        if (notificationPerm.state === 'granted') {
+                            console.log(pre, 'notification granted')
+                            registerPushSubscriptionAfterPermissionGranted(sw);
+                        }
+
                         notificationPerm.onchange = function () {
                             if (notificationPerm.state === 'granted') {
                                 console.log(pre, 'notification granted')
