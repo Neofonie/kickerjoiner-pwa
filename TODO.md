@@ -1,5 +1,7 @@
 21.10.2021
-* service worker in lighthouse not there
+* (!) Circular dependencies
+ src\stores.ts -> src\api.ts -> src\stores.ts
+ src\websocket.ts -> src\stores.ts -> src\api.ts -> src\websocket.ts
 * open notification
 * filter notification for every is involved in a game
 * offline detector
