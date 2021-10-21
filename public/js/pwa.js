@@ -81,7 +81,7 @@
     window.onload = () => {
         if ('serviceWorker' in navigator) {
             console.log(pre, 'init service worker')
-            const sw = navigator.serviceWorker.register('/js/service-worker.js?cb=' + window.cacheBuster, { scope: './' })
+            const sw = navigator.serviceWorker.register('/js/service-worker.js?cb=' + window.cacheBuster, { scope: '/kickerjoiner-pwa/' })
                 .then((registration) => {
                     console.log(pre, 'service worker registered');
                 }).catch((error) => {
