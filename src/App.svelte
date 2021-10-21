@@ -10,7 +10,6 @@
     import Notification from "./comps/Notification.svelte";
 
     connectToWSS((data) => {
-        console.log('connectToWSS refresh', data)
         switch (data.message) {
             case 'CONNECTION_ON': // connection with server is on
                 storedThisClient.update(value => data.clientid);

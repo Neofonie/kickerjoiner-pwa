@@ -1,24 +1,26 @@
 import { localStore } from './stores';
 
 const wsApi = 'wss://kij.willy-selma.de/ws';
+const pre = '[WSS]';
 let pingTimeout = null;
 let socket;
 
 export function connectToWSS(updateCallback) {
-    console.log('connectToWSS', wsApi);
+    console.log(pre, 'connectToWSS', wsApi);
     socket = new WebSocket(wsApi);
     socket.onmessage = async (event) => {
         const data = event.data;
+        console.log(pre, 'onmessage', JSON.parse(data))
         updateCallback(JSON.parse(data));
     };
     socket.onopen = heartbeat;
     socket.onping = heartbeat;
     socket.onerror = (e) => {
-        console.log('socket.error', e);
+        console.error(pre, 'socket.error', e);
         updateCallback({ message: 'ERROR', error: e });
     };
     socket.onclose = (e) => {
-        console.log('socket.close', e);
+        console.log(pre, 'socket.close', e);
         clearTimeout(pingTimeout);
         updateCallback({ message: 'CLOSE', error: e });
     };
@@ -30,7 +32,7 @@ export function connectToWSS(updateCallback) {
 }
 
 export function sendMessage(data) {
-    console.log('sendMessage', data, socket)
+    console.log(pre, 'sendMessage', data, socket)
     if (socket) {
         socket.send(JSON.stringify(data));
     }
@@ -58,7 +60,7 @@ export function sendClientNick(nickname) {
 }
 
 function heartbeat() {
-    console.log('heartbeat');
+    console.log(pre, 'heartbeat');
     if (pingTimeout !== null) {
         clearTimeout(pingTimeout);
     }
