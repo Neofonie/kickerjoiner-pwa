@@ -1,0 +1,60 @@
+@import './variables';
+
+table {
+  width: 100%;
+  background: $color-white;
+  color: $color-black;
+  border-radius: $border-radius;
+  border-spacing: 0;
+  overflow: hidden;
+
+  thead {
+    td {
+      background: $color-neutral;
+      font-weight: bold;
+    }
+
+    th {
+      text-align: left;
+      background: $color-neutral-50;
+      font-size: ms(-1);
+    }
+  }
+
+  td,
+  th {
+    padding: $space-a-md;
+  }
+
+  tbody tr:hover td {
+    background: $color-neutral-50;
+  }
+
+  i {
+    cursor: pointer;
+
+    &:hover {
+      color: $color-primary-light;
+    }
+  }
+
+  button {
+    cursor: pointer;
+    background: $color-primary;
+    border: 0;
+    color: $color-white;
+    padding: $space-a-md;
+    border-radius: $border-radius;
+    font-size: ms(0);
+
+    &:hover {
+      background: $color-primary-light;
+    }
+  }
+
+  .gogogo {
+    color: $color-green;
+    padding: $space-a-md;
+    display: inline-block;
+  }
+}
