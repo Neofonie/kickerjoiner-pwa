@@ -87,7 +87,7 @@ self.addEventListener('notificationclick', function (event) {
     console.log(pre, 'notificationclick', event.notification)
     //For root applications: just change "'./'" to "'/'"
     //Very important having the last forward slash on "new URL('./', location)..."
-    const rootUrl = new URL('../', location).href;
+    const rootUrl = 'https://neofonie.github.io/kickerjoiner-pwa';
     event.notification.close();
     event.waitUntil(
         clients.matchAll().then(matchedClients => {
@@ -98,7 +98,7 @@ self.addEventListener('notificationclick', function (event) {
                 }
             }
             // open new window
-            return clients.openWindow('https://neofonie.github.io/kickerjoiner-pwa').then(function (client) {
+            return clients.openWindow(rootUrl).then(function (client) {
                 client.focus();
             });
         })
