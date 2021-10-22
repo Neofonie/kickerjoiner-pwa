@@ -91,13 +91,14 @@ self.addEventListener('notificationclick', function (event) {
     event.notification.close();
     event.waitUntil(
         clients.matchAll().then(matchedClients => {
+            // focus open tab
             for (let client of matchedClients) {
                 if (client.url.indexOf(rootUrl) >= 0) {
                     return client.focus();
                 }
             }
-
-            return clients.openWindow(rootUrl).then(function (client) {
+            // open new window
+            return clients.openWindow('https://neofonie.github.io/kickerjoiner-pwa').then(function (client) {
                 client.focus();
             });
         })
