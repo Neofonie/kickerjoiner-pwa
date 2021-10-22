@@ -1,6 +1,6 @@
 (() => {
     const pre = '[PWA Loader]';
-    const api = '//kij.willy-selma.de';
+    const api = '//kij.willy-selma.de/push';
     let sw;
     let swRegistration;
     const registerPushSubscriptionAfterPermissionGranted = (sw) => {
@@ -37,7 +37,7 @@
                             return subscription;
                         }
 
-                        const vapidPublicKey = await fetch(api + '/push/vapidPublicKey').then(res => res.text());
+                        const vapidPublicKey = await fetch(api + '/vapidPublicKey').then(res => res.text());
                         console.log(pre, 'create subscription', subscription);
                         const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
                         return swRegistration.pushManager.subscribe({
@@ -48,7 +48,7 @@
             })
             .then(async function (subscription) {
                 if (!subscriptionExists) {
-                    const dbsubscription = await fetch(api + '/push/register', {
+                    const dbsubscription = await fetch(api + '/register', {
                         method: 'post',
                         headers: {
                             'Content-type': 'application/json'
@@ -65,7 +65,7 @@
                     const payload = msg || 'ich bin ein notify';
                     const ttl = 24 * 60 * 60;
 
-                    fetch(api + '/push/sendNotification', {
+                    fetch(api + '/sendNotification', {
                         method: 'post',
                         headers: {
                             'Content-type': 'application/json'
@@ -82,7 +82,7 @@
     window.onload = () => {
         if ('serviceWorker' in navigator) {
             console.log(pre, 'init service worker')
-            sw = navigator.serviceWorker.register('/kickerjoiner-pwa/js/service-worker.js?cb=' + window.cacheBuster)
+            sw = navigator.serviceWorker.register('./js/service-worker.js?cb=' + window.cacheBuster)
                 .then((registration) => {
                     console.log(pre, 'service worker registered', registration);
                     swRegistration = registration;
@@ -103,7 +103,7 @@
 
                                     const subscriptionID = localStorage.getItem('subscriptionID');
                                     if (!!subscriptionID && (notificationPerm.state === 'prompt' || notificationPerm.state === 'denied')) {
-                                        fetch(api + '/push/unregister', {
+                                        fetch(api + '/unregister', {
                                             method: 'post',
                                             headers: {
                                                 'Content-type': 'application/json'
