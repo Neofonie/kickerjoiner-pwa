@@ -83,51 +83,71 @@
     window.onload = () => {
         if ('serviceWorker' in navigator) {
             console.log(pre, 'init service worker')
-            // TODO: try Promise.all
             sw = navigator.serviceWorker.register('./js/service-worker.js?cb=' + window.cacheBuster)
                 .then((registration) => {
                     console.log(pre, 'service worker registered', registration);
                     swRegistration = registration;
+
+                    let serviceWorker;
+                    if (registration.installing) {
+                        serviceWorker = registration.installing;
+                        // console.log('Service worker installing');
+                    } else if (registration.waiting) {
+                        serviceWorker = registration.waiting;
+                        // console.log('Service worker installed & waiting');
+                    } else if (registration.active) {
+                        serviceWorker = registration.active;
+                        // console.log('Service worker active');
+                    }
+
+                    if (serviceWorker) {
+                        console.log(pre, 'sw current state', serviceWorker.state);
+                        if (serviceWorker.state === 'activated') {
+                            //If push subscription wasnt done yet have to do here
+                            console.log(pre, 'sw already activated - Do watever needed here');
+                        }
+                        serviceWorker.addEventListener('statechange', function(e) {
+                            console.log(pre, 'sw statechange : ', e.target.state);
+                            if (e.target.state === "activated") {
+                                // use pushManger for subscribing here.
+                                console.log(pre, 'Just now activated. now we can subscribe for push notification');
+                                if ('permissions' in navigator) {
+                                    navigator.permissions.query({ name: 'notifications' })
+                                        .then((notificationPerm) => {
+                                            console.log(pre, 'notification permission init', notificationPerm.state)
+
+                                            if (notificationPerm.state === 'granted') {
+                                                registerPushSubscriptionAfterPermissionGranted(sw);
+                                            }
+
+                                            notificationPerm.onchange = () => {
+                                                if (notificationPerm.state === 'granted') {
+                                                    registerPushSubscriptionAfterPermissionGranted(sw);
+                                                }
+
+                                                const subscriptionID = localStorage.getItem('subscriptionID');
+                                                if (!!subscriptionID && (notificationPerm.state === 'prompt' || notificationPerm.state === 'denied')) {
+                                                    fetch(api + '/unregister', {
+                                                        method: 'post',
+                                                        headers: {
+                                                            'Content-type': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({
+                                                            subscriptionID
+                                                        }),
+                                                    });
+                                                }
+                                            }
+                                        });
+                                }
+                            }
+                        });
+                    }
                 }).catch((error) => {
                     console.error(pre, 'service worker error', error);
                 });
 
-            sw.addEventListener('statechange', (e) => {
-                console.log('sw statechange : ', e.target.state);
-                if (e.target.state === 'activated') {
-                    // use pushManger for subscribing here.
-                    console.log('Just now activated. now we can subscribe for push notification')
-                    if ('permissions' in navigator) {
-                        navigator.permissions.query({ name: 'notifications' })
-                            .then((notificationPerm) => {
-                                console.log(pre, 'notification permission init', notificationPerm.state)
 
-                                if (notificationPerm.state === 'granted') {
-                                    registerPushSubscriptionAfterPermissionGranted(sw);
-                                }
-
-                                notificationPerm.onchange = () => {
-                                    if (notificationPerm.state === 'granted') {
-                                        registerPushSubscriptionAfterPermissionGranted(sw);
-                                    }
-
-                                    const subscriptionID = localStorage.getItem('subscriptionID');
-                                    if (!!subscriptionID && (notificationPerm.state === 'prompt' || notificationPerm.state === 'denied')) {
-                                        fetch(api + '/unregister', {
-                                            method: 'post',
-                                            headers: {
-                                                'Content-type': 'application/json'
-                                            },
-                                            body: JSON.stringify({
-                                                subscriptionID
-                                            }),
-                                        });
-                                    }
-                                }
-                            });
-                    }
-                }
-            });
         }
     }
 })()
