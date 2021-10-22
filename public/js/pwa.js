@@ -87,6 +87,13 @@
                     console.log(pre, 'service worker registered', registration);
                     swRegistration = registration;
 
+
+                }).catch((error) => {
+                    console.error(pre, 'service worker error', error);
+                });
+
+            if ('PushManager' in window) {
+                navigator.serviceWorker.ready.then(registration => {
                     if ('permissions' in navigator) {
                         navigator.permissions.query({ name: 'notifications' })
                             .then(function (notificationPerm) {
@@ -116,9 +123,8 @@
                                 }
                             });
                     }
-                }).catch((error) => {
-                    console.error(pre, 'service worker error', error);
-                });
+                })
+            }
         }
     }
 })()
