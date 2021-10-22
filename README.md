@@ -18,3 +18,4 @@
   * add maskable icons https://maskable.app/editor 96 128 192
 * add <icon /> and <meta /> tags index.html
 * add public/js/pwa.js & service-worker.js
+* pwa debugging https://www.thinktecture.com/downloads/v1-pwa-cheatsheet-thinktecture-4c.pdf
