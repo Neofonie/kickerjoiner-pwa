@@ -87,7 +87,7 @@ self.addEventListener('notificationclick', function (event) {
     console.log(pre, 'notificationclick', event.notification)
     //For root applications: just change "'./'" to "'/'"
     //Very important having the last forward slash on "new URL('./', location)..."
-    const rootUrl = new URL('./', location).href;
+    const rootUrl = new URL('../', location).href;
     event.notification.close();
     event.waitUntil(
         clients.matchAll().then(matchedClients => {
