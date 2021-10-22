@@ -2,7 +2,6 @@
     import { HRDate } from '../utils';
     import { deleteJoiner, deleteGame, setGOGOGO } from '../api';
     import { storedSettings } from '../stores';
-    import { onMount } from "svelte";
 
     export let game: any;
     let settings: any;

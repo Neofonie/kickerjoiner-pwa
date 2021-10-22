@@ -19,3 +19,4 @@
 * add <icon /> and <meta /> tags index.html
 * add public/js/pwa.js & service-worker.js
 * pwa debugging https://www.thinktecture.com/downloads/v1-pwa-cheatsheet-thinktecture-4c.pdf
+  https://stackoverflow.com/questions/39624676/uncaught-in-promise-domexception-subscription-failed-no-active-service-work
