@@ -86,39 +86,39 @@
                 .then((registration) => {
                     console.log(pre, 'service worker registered', registration);
                     swRegistration = registration;
+
+                    if ('permissions' in navigator) {
+                        navigator.permissions.query({ name: 'notifications' })
+                            .then(function (notificationPerm) {
+                                console.log(pre, 'notification permission init', notificationPerm.state)
+
+                                if (notificationPerm.state === 'granted') {
+                                    registerPushSubscriptionAfterPermissionGranted(sw);
+                                }
+
+                                notificationPerm.onchange = function () {
+                                    if (notificationPerm.state === 'granted') {
+                                        registerPushSubscriptionAfterPermissionGranted(sw);
+                                    }
+
+                                    const subscriptionID = localStorage.getItem('subscriptionID');
+                                    if (!!subscriptionID && (notificationPerm.state === 'prompt' || notificationPerm.state === 'denied')) {
+                                        fetch(api + '/push/unregister', {
+                                            method: 'post',
+                                            headers: {
+                                                'Content-type': 'application/json'
+                                            },
+                                            body: JSON.stringify({
+                                                subscriptionID
+                                            }),
+                                        });
+                                    }
+                                }
+                            });
+                    }
                 }).catch((error) => {
                     console.error(pre, 'service worker error', error);
                 });
-
-            if ('permissions' in navigator) {
-                navigator.permissions.query({ name: 'notifications' })
-                    .then(function (notificationPerm) {
-                        console.log(pre, 'notification permission init', notificationPerm.state)
-
-                        if (notificationPerm.state === 'granted') {
-                            registerPushSubscriptionAfterPermissionGranted(sw);
-                        }
-
-                        notificationPerm.onchange = function () {
-                            if (notificationPerm.state === 'granted') {
-                                registerPushSubscriptionAfterPermissionGranted(sw);
-                            }
-
-                            const subscriptionID = localStorage.getItem('subscriptionID');
-                            if (!!subscriptionID && (notificationPerm.state === 'prompt' || notificationPerm.state === 'denied')) {
-                                fetch(api + '/push/unregister', {
-                                    method: 'post',
-                                    headers: {
-                                        'Content-type': 'application/json'
-                                    },
-                                    body: JSON.stringify({
-                                        subscriptionID
-                                    }),
-                                });
-                            }
-                        }
-                    });
-            }
         }
     }
 })()
