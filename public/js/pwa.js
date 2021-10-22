@@ -39,7 +39,7 @@
                         }
 
                         const vapidPublicKey = await fetch(api + '/vapidPublicKey').then(res => res.text());
-                        console.log(pre, 'create subscription', subscription);
+                        console.log(pre, 'create subscription', subscription, swRegistration);
                         const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
                         return swRegistration.pushManager.subscribe({
                             userVisibleOnly: true,
