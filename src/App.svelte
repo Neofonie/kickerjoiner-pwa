@@ -4,6 +4,7 @@
     import { connectToWSS, sendClientNick } from './websocket';
     import { getGames } from './api';
     import { updateClients, storedThisClient } from './stores';
+    import Github from "./comps/Github.svelte";
     import Joiner from "./comps/Joiner.svelte";
     import Games from "./comps/Games.svelte";
     import Clients from "./comps/Clients.svelte";
@@ -41,6 +42,7 @@
 </script>
 
 <main>
+    <Github />
     <Joiner/>
     <Games/>
     <Clients/>
