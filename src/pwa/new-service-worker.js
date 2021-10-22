@@ -1,5 +1,5 @@
 const appName = 'kij';
-const appVersion = window.cacheBuster;
+const appVersion = 'window.cacheBuster';
 const cacheName = `${appName}-r${appVersion}`;
 
 self.addEventListener('activate', (event) => {
