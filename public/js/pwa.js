@@ -28,10 +28,10 @@
         }
 
         sw
-            .then(function () {
-                console.log(pre, 'service worker is ready for push manager')
+            .then(() => {
+                console.log(pre, 'service worker is ready for push manager', swRegistration)
                 return swRegistration.pushManager.getSubscription()
-                    .then(async function (subscription) {
+                    .then(async (subscription) => {
                         if (subscription) {
                             console.log(pre, 'subscription already there', subscription);
                             subscriptionExists = true;
@@ -47,7 +47,7 @@
                         });
                     });
             })
-            .then(async function (subscription) {
+            .then(async (subscription) => {
                 if (!subscriptionExists) {
                     const dbsubscription = await fetch(api + '/register', {
                         method: 'post',
@@ -91,14 +91,14 @@
 
                     if ('permissions' in navigator) {
                         navigator.permissions.query({ name: 'notifications' })
-                            .then(function (notificationPerm) {
+                            .then((notificationPerm) => {
                                 console.log(pre, 'notification permission init', notificationPerm.state)
 
                                 if (notificationPerm.state === 'granted') {
                                     registerPushSubscriptionAfterPermissionGranted(sw);
                                 }
 
-                                notificationPerm.onchange = function () {
+                                notificationPerm.onchange = () => {
                                     if (notificationPerm.state === 'granted') {
                                         registerPushSubscriptionAfterPermissionGranted(sw);
                                     }
