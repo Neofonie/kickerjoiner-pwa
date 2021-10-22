@@ -1,4 +1,5 @@
 import { localStore } from './stores';
+import { capitalizeFirstLetter } from './utils';
 
 const wsApi = 'wss://kij.willy-selma.de/ws';
 const pre = '[WSS]';
@@ -53,7 +54,9 @@ export function sendClientNick(nickname) {
         localStore.set('nickname', nickname);
         sendMessage({
             message: 'SET_CLIENTNICK',
-            type: ['pwa', browser.parsedResult.os.name, browser.parsedResult.platform.type, browser.parsedResult.browser.name].join(' / '),
+            type: ['pwa', browser.parsedResult.os.name, browser.parsedResult.platform.type, browser.parsedResult.browser.name]
+                .map(value => capitalizeFirstLetter(value))
+                .join(' / '),
             nick: nickname,
         });
     }

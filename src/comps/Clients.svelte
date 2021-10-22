@@ -1,8 +1,8 @@
 <script lang="ts">
     import { HRDate } from '../utils';
     import { localStore, storedClients } from '../stores';
-    import { sendClientNick } from "../websocket";
-    import { onMount } from "svelte";
+    import { sendClientNick } from '../websocket';
+    import { onMount } from 'svelte';
 
     let clients: any = [];
     let nickname: any;

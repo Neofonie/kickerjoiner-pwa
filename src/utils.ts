@@ -20,6 +20,8 @@ export function HRDate(timestamp) {
     return `${day}.${month}.${year} ${hour}:${min}`;
 }
 
-
+export function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 
