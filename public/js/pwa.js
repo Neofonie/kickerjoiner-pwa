@@ -3,6 +3,7 @@
     const api = '//kij.willy-selma.de/push';
     let sw;
     let swRegistration;
+
     const registerPushSubscriptionAfterPermissionGranted = (sw) => {
         console.log(pre, 'notification granted')
         let subscriptionExists = false;
@@ -82,18 +83,12 @@
     window.onload = () => {
         if ('serviceWorker' in navigator) {
             console.log(pre, 'init service worker')
+            // TODO: try Promise.all
             sw = navigator.serviceWorker.register('./js/service-worker.js?cb=' + window.cacheBuster)
                 .then((registration) => {
                     console.log(pre, 'service worker registered', registration);
                     swRegistration = registration;
 
-
-                }).catch((error) => {
-                    console.error(pre, 'service worker error', error);
-                });
-
-            if ('PushManager' in window) {
-                navigator.serviceWorker.ready.then(registration => {
                     if ('permissions' in navigator) {
                         navigator.permissions.query({ name: 'notifications' })
                             .then(function (notificationPerm) {
@@ -123,8 +118,15 @@
                                 }
                             });
                     }
-                })
-            }
+                }).catch((error) => {
+                    console.error(pre, 'service worker error', error);
+                });
+
+            // if ('PushManager' in window) {
+            //     navigator.serviceWorker.ready.then(registration => {
+            //
+            //     })
+            // }
         }
     }
 })()
